@@ -10,7 +10,8 @@
  */
 // Use your computer's IP when testing on a physical device. Must match server .env SERVER_IP.
 // Find it: Windows: ipconfig → IPv4; Mac/Linux: ifconfig or ip addr
-const DEV_API_BASE_URL = 'http://localhost:3000/api';
+// Using production cPanel server
+const DEV_API_BASE_URL = 'https://attendance.zenuino.in/api';
 
 export const API_BASE_URL =
   typeof __DEV__ !== 'undefined' && __DEV__

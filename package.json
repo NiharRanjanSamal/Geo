@@ -11,7 +11,7 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "axios": "^1.6.0",
-    "expo": "~54.0.0",
+    "expo": "~54.0.33",
     "expo-auth-session": "^7.0.10",
     "expo-constants": "~18.0.13",
     "expo-crypto": "^15.0.8",
@@ -23,7 +23,7 @@
     "expo-localization": "^17.0.8",
     "expo-location": "~19.0.8",
     "expo-navigation-bar": "~5.0.10",
-    "expo-router": "~6.0.22",
+    "expo-router": "~6.0.23",
     "expo-secure-store": "~15.0.8",
     "expo-sqlite": "~16.0.10",
     "expo-status-bar": "~3.0.9",
@@ -31,7 +31,7 @@
     "expo-web-browser": "^15.0.10",
     "i18n-js": "^4.5.1",
     "lodash": "^4.17.23",
-    "react": "19.2.4",
+    "react": "^19.1.0",
     "react-native": "0.81.5",
     "react-native-maps": "1.20.1",
     "react-native-safe-area-context": "~5.6.0",
@@ -42,7 +42,7 @@
     "@babel/core": "^7.24.0",
     "@types/react": "~19.1.0",
     "babel-plugin-module-resolver": "^5.0.2",
-    "typescript": "~5.3.0"
+    "typescript": "~5.9.2"
   },
   "private": true
 }
