@@ -31,16 +31,20 @@
       },
       "package": "com.geoattendance.app",
       "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION",
-        "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.RECORD_AUDIO"
       ],
       "googleServicesFile": "./google-services.json"
     },
-    "web": {
-    },
+    "web": {},
     "plugins": [
       [
         "expo-navigation-bar",
@@ -76,6 +80,19 @@
         }
       ]
     ],
-    "scheme": "geo-attendance"
+    "scheme": "geo-attendance",
+    "extra": {
+      "expo-navigation-bar": {
+        "backgroundColor": "#1B4332",
+        "barStyle": "light",
+        "borderColor": "#163A2B"
+      },
+      "router": {
+        "root": "./app"
+      },
+      "eas": {
+        "projectId": "a4fa51f1-97c1-4966-8935-47487f3410b3"
+      }
+    }
   }
 }
