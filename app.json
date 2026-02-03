@@ -4,11 +4,6 @@
     "slug": "geo-attendance",
     "version": "1.0.0",
     "owner": "lapu2003",
-    "extra": {
-      "eas": {
-        "projectId": "e79e494e-080e-4731-90aa-67265da3ad96"
-      }
-    },
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
