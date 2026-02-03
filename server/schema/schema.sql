@@ -1,0 +1,119 @@
+-- MySQL schema for attendance API (aligned with complete-schema.sql concepts)
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT EXISTS tenant (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  tenant_code VARCHAR(64) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'active',
+  subscription_tier VARCHAR(32) NOT NULL DEFAULT 'basic',
+  settings JSON DEFAULT NULL,
+  created_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  updated_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_tenant_code (tenant_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS company (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  tenant_id INT UNSIGNED NOT NULL,
+  company_code VARCHAR(64) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'active',
+  timezone VARCHAR(64) NOT NULL DEFAULT 'UTC',
+  settings JSON DEFAULT NULL,
+  created_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  updated_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_company (tenant_id, company_code),
+  FOREIGN KEY (tenant_id) REFERENCES tenant(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS site (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  company_id INT UNSIGNED NOT NULL,
+  site_code VARCHAR(64) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(512) DEFAULT NULL,
+  timezone VARCHAR(64) DEFAULT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'active',
+  created_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  updated_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_site (company_id, site_code),
+  FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_account (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  tenant_id INT UNSIGNED NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'active',
+  role VARCHAR(32) NOT NULL DEFAULT 'employee',
+  company_id INT UNSIGNED DEFAULT NULL,
+  site_id INT UNSIGNED DEFAULT NULL,
+  created_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  updated_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_user_email (tenant_id, email),
+  FOREIGN KEY (tenant_id) REFERENCES tenant(id) ON DELETE CASCADE,
+  FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE SET NULL,
+  FOREIGN KEY (site_id) REFERENCES site(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS employee (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  company_id INT UNSIGNED NOT NULL,
+  employee_code VARCHAR(64) NOT NULL,
+  first_name VARCHAR(128) NOT NULL,
+  last_name VARCHAR(128) DEFAULT NULL,
+  display_name VARCHAR(255) DEFAULT NULL,
+  email VARCHAR(255) DEFAULT NULL,
+  phone VARCHAR(64) DEFAULT NULL,
+  status VARCHAR(32) NOT NULL DEFAULT 'active',
+  created_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  updated_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_employee (company_id, employee_code),
+  FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS employee_user_map (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  employee_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  is_primary TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  status VARCHAR(32) NOT NULL DEFAULT 'active',
+  created_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  updated_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_emp_user (employee_id, user_id),
+  FOREIGN KEY (employee_id) REFERENCES employee(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES user_account(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- attendance_date: YYYYMMDD as INT
+CREATE TABLE IF NOT EXISTS attendance_day (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  employee_id INT UNSIGNED NOT NULL,
+  site_id INT UNSIGNED NOT NULL,
+  attendance_date INT UNSIGNED NOT NULL,
+  first_in_time INT UNSIGNED DEFAULT NULL,
+  last_out_time INT UNSIGNED DEFAULT NULL,
+  total_work_seconds INT UNSIGNED DEFAULT 0,
+  session_count INT UNSIGNED DEFAULT 0,
+  status VARCHAR(32) NOT NULL DEFAULT 'present',
+  created_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  updated_at INT UNSIGNED NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_att_day (employee_id, site_id, attendance_date),
+  KEY idx_att_day_date (attendance_date),
+  KEY idx_att_day_site (site_id),
+  FOREIGN KEY (employee_id) REFERENCES employee(id) ON DELETE CASCADE,
+  FOREIGN KEY (site_id) REFERENCES site(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

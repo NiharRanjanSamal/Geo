@@ -1,0 +1,14 @@
+# Single-domain: Frontend + Backend on attendance.zenuino.in
+# Replace 3000 with your Node.js app port from cPanel Setup Node.js App
+
+RewriteEngine On
+RewriteBase /
+
+# Proxy /api to Node.js backend
+RewriteCond %{REQUEST_URI} ^/api [NC]
+RewriteRule ^api/(.*)$ http://127.0.0.1:3000/api/$1 [P,L]
+
+# SPA fallback
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]
